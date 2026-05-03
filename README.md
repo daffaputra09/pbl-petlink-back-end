@@ -23,13 +23,66 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Petlink backend: [Nest](https://github.com/nestjs/nest) API with [Supabase](https://supabase.com) (Postgres + Auth). Core schema migrations live under `supabase/migrations/`.
 
 ## Project setup
 
 ```bash
 $ npm install
 ```
+
+Copy environment variables and fill in values from the Supabase dashboard:
+
+```bash
+cp .env.example .env
+```
+
+Required for the Nest app: `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` (anon/publishable client key). Add `SUPABASE_SERVICE_ROLE_KEY` for local tooling only (seed script below); keep it secret and never commit it.
+
+The app exposes a global Supabase JS client via `SupabaseModule`. Inject it with `@Inject(SUPABASE_CLIENT)` and type `SupabaseClient` from `@supabase/supabase-js`.
+
+## Supabase CLI and database migrations
+
+Install the [Supabase CLI](https://supabase.com/docs/guides/cli) (or use the local devDependency via `npx supabase`).
+
+Link this repo to your hosted project (project ref is the subdomain of `SUPABASE_URL`, e.g. `faoxxiwpvtbhadisdyfm`):
+
+```bash
+supabase login
+supabase link --project-ref faoxxiwpvtbhadisdyfm
+```
+
+Apply migrations to the linked remote database:
+
+```bash
+npm run db:push
+```
+
+Migrations in `supabase/migrations/` run in timestamp order: core schema first (`*_petlink_core.sql`), then services/chat/notifications/FCM (`*_services_chat_notifications_fcm.sql`).
+
+### Seed default Auth user (development)
+
+With `SUPABASE_SERVICE_ROLE_KEY` set in `.env`, create a default user (password defaults to `petlink`) and upsert matching `public.profiles`:
+
+```bash
+npm run seed:default-user
+```
+
+Defaults: email `admin@petlink.local`, profile role `admin`. Override with `SEED_DEFAULT_USER_EMAIL`, `SEED_DEFAULT_USER_PASSWORD`, `SEED_DEFAULT_PROFILE_NAME`, and `SEED_DEFAULT_PROFILE_ROLE` (see `.env.example`).
+
+To verify email/password login (same flow as a client app, using `SUPABASE_PUBLISHABLE_KEY`):
+
+```bash
+npm run test:auth-login
+```
+
+Optional env: `TEST_LOGIN_EMAIL`, `TEST_LOGIN_PASSWORD`. A successful run prints the user id and a truncated JWT (`access_token`).
+
+Useful scripts: `db:migrate:new` (create an empty migration file), `db:diff`, `db:start` / `db:stop` (local stack via Docker), `seed:default-user`, `test:auth-login`.
+
+After `db:push`, confirm in the SQL editor or `psql` that `public.profiles.id` has a foreign key to `auth.users(id)`, and that `clinic_profiles.open_days` only allows integers from 1 through 7 (1 = Monday, 7 = Sunday).
+
+Row Level Security (RLS) policies and an `auth.users` trigger to auto-insert `public.profiles` are not included; add them in follow-up migrations when product rules are fixed.
 
 ## Compile and run the project
 
