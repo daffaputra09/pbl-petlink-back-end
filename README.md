@@ -58,7 +58,7 @@ Apply migrations to the linked remote database:
 npm run db:push
 ```
 
-Migrations in `supabase/migrations/` run in timestamp order: core schema first (`*_petlink_core.sql`), then services/chat/notifications/FCM (`*_services_chat_notifications_fcm.sql`).
+Migrations in `supabase/migrations/` run in timestamp order: core (`*_petlink_core.sql`), services/chat/FCM (`*_services_chat_notifications_fcm.sql`), bookings and doctor schedules (`*_bookings_and_doctor_schedules.sql`), then clinic reviews (`*_clinic_reviews.sql`).
 
 ### Seed default Auth user (development)
 
