@@ -269,6 +269,30 @@ const SEED_USERS = [
       consultation_fee: 200000,
     },
   },
+  {
+    email: 'doctor.atiqah@petlink-app.vercel.app',
+    password: defaultPassword,
+    profile: { name: 'Atiqah Fathin Fauziyyah', role: 'doctor' },
+    doctor: {
+      clinicEmail: 'clinic.pnm@petlink-app.vercel.app',
+      bio: 'Dokter hewan dengan minat nutrisi dan perawatan preventif.',
+      specialization: 'Nutrisi Hewan',
+      license_number: 'DVM-PNM-004',
+      consultation_fee: 160000,
+    },
+  },
+  {
+    email: 'doctor.nayla@petlink-app.vercel.app',
+    password: defaultPassword,
+    profile: { name: 'Nayla Annora Nobel Widyonarko', role: 'doctor' },
+    doctor: {
+      clinicEmail: 'clinic.ub@petlink-app.vercel.app',
+      bio: 'Fokus pada dermatologi dan perawatan kulit hewan peliharaan.',
+      specialization: 'Dermatologi Hewan',
+      license_number: 'DVM-UB-005',
+      consultation_fee: 180000,
+    },
+  },
 ];
 
 function fail(msg) {
