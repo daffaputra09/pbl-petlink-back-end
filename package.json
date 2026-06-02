@@ -25,6 +25,8 @@
     "seed:default-user": "node --env-file=.env scripts/seed-default-user.mjs",
     "seed:users": "node --env-file=.env scripts/seed-users.mjs",
     "seed:pet-types": "node --env-file=.env scripts/seed-pet-types.mjs",
+    "seed:services": "node --env-file=.env scripts/seed-services.mjs",
+    "seed:doctor-schedules": "node --env-file=.env scripts/seed-doctor-schedules.mjs",
     "test:auth-login": "node --env-file=.env scripts/test-auth-login.mjs"
   },
   "engines": {

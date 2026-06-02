@@ -398,7 +398,7 @@ async function upsertClinicProfile(userId, clinic) {
       address: clinic.address,
       latitude: clinic.latitude,
       longitude: clinic.longitude,
-      is_verified: clinic.is_verified ?? false,
+      is_verified: clinic.is_verified ?? true,
     },
     { onConflict: 'id' },
   );
