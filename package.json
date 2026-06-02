@@ -24,6 +24,7 @@
     "db:stop": "supabase stop",
     "seed:default-user": "node --env-file=.env scripts/seed-default-user.mjs",
     "seed:users": "node --env-file=.env scripts/seed-users.mjs",
+    "seed:pet-types": "node --env-file=.env scripts/seed-pet-types.mjs",
     "test:auth-login": "node --env-file=.env scripts/test-auth-login.mjs"
   },
   "engines": {
