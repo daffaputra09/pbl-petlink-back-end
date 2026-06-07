@@ -25,6 +25,8 @@
 
 Petlink backend: [Nest](https://github.com/nestjs/nest) API with [Supabase](https://supabase.com) (Postgres + Auth). Core schema migrations live under `supabase/migrations/`.
 
+Pembayaran **Midtrans** tidak diimplementasikan di repo ini — app mobile (`petlink`) memanggil API Midtrans langsung, lalu memfinalisasi status via RPC Supabase (`finalize_booking_payment`, dll.). Kolom `payments.midtrans_*` di database tetap dipakai mobile.
+
 ## Project setup
 
 ```bash
