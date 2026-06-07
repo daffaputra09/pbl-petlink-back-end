@@ -124,7 +124,10 @@ export class ChatPushService {
         message_id: record.id,
       },
       android: { priority: 'high', notification: { sound: 'default' } },
-      apns: { payload: { aps: { sound: 'default' } } },
+      apns: {
+        headers: { 'apns-priority': '10' },
+        payload: { aps: { sound: 'default', badge: 1 } },
+      },
     });
 
     const staleTokenIds: string[] = [];
