@@ -171,6 +171,8 @@ additional_redirect_urls = [
   "https://petlink-app.vercel.app/auth/reset-password",
   "https://petlink-app.vercel.app/auth/accept-invite",
   "https://petlink-app.vercel.app/auth/confirm",
+  "https://petlink-app.vercel.app/auth/callback?next=/auth/set-password",
+  "https://petlink-app.vercel.app/auth/callback?next=/auth/reset-password",
 ]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
@@ -242,7 +244,7 @@ max_frequency = "1s"
 # Number of characters used in the email OTP.
 otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
-otp_expiry = 3600
+otp_expiry = 86400
 
 # Use a production-ready SMTP server (Gmail — configure in Dashboard for hosted projects)
 [auth.email.smtp]

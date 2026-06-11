@@ -19,6 +19,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:migrate:new": "supabase migration new",
     "db:push": "supabase db push",
+    "db:repair:history": "node scripts/repair-migration-history.mjs",
     "auth:config:push": "node --env-file=.env scripts/push-auth-config.mjs",
     "db:diff": "supabase db diff",
     "db:start": "supabase start",
