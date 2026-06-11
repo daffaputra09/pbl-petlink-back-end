@@ -116,7 +116,11 @@ export class ChatPushService {
 
     const response = await admin.messaging().sendEachForMulticast({
       tokens: tokens.map((t) => t.fcm_token as string),
-      notification: { title, body },
+      notification: {
+        title,
+        body,
+        imageUrl: 'https://petlink-app.vercel.app/logo.png',
+      },
       data: {
         type: 'chat',
         thread_id: record.thread_id,
@@ -129,7 +133,7 @@ export class ChatPushService {
           sound: 'default',
           icon: 'ic_notification',
           color: '#047857',
-          image: 'https://petlink-app.vercel.app/logo.png',
+          imageUrl: 'https://petlink-app.vercel.app/logo.png',
         },
       },
       apns: {
