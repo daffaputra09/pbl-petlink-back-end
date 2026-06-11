@@ -45,37 +45,44 @@ const admin = createClient(url, serviceKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
-const { data: existing, error: fetchError } = await admin
-  .from('pet_types')
-  .select('id, name')
-  .is('deleted_at', null)
-  .order('name');
-
-if (fetchError) fail(`Fetch pet_types failed: ${fetchError.message}`);
-
-const existingNames = new Set((existing ?? []).map((r) => r.name));
-const toInsert = DEFAULT_TYPES.filter((name) => !existingNames.has(name));
-
-if (toInsert.length > 0) {
-  const { error: insertError } = await admin
+async function main() {
+  const { data: existing, error: fetchError } = await admin
     .from('pet_types')
-    .insert(toInsert.map((name) => ({ name })));
+    .select('id, name')
+    .is('deleted_at', null)
+    .order('name');
 
-  if (insertError) fail(`Insert pet_types failed: ${insertError.message}`);
-  console.log(`Inserted ${toInsert.length}: ${toInsert.join(', ')}`);
-} else {
-  console.log('No new rows (all default types already present).');
+  if (fetchError) fail(`Fetch pet_types failed: ${fetchError.message}`);
+
+  const existingNames = new Set((existing ?? []).map((r) => r.name));
+  const toInsert = DEFAULT_TYPES.filter((name) => !existingNames.has(name));
+
+  if (toInsert.length > 0) {
+    const { error: insertError } = await admin
+      .from('pet_types')
+      .insert(toInsert.map((name) => ({ name })));
+
+    if (insertError) fail(`Insert pet_types failed: ${insertError.message}`);
+    console.log(`Inserted ${toInsert.length}: ${toInsert.join(', ')}`);
+  } else {
+    console.log('No new rows (all default types already present).');
+  }
+
+  const { data: all, error: listError } = await admin
+    .from('pet_types')
+    .select('id, name')
+    .is('deleted_at', null)
+    .order('name');
+
+  if (listError) fail(`List pet_types failed: ${listError.message}`);
+
+  console.log(`\nActive pet_types (${all?.length ?? 0}):`);
+  for (const row of all ?? []) {
+    console.log(`  - ${row.name} (${row.id})`);
+  }
 }
 
-const { data: all, error: listError } = await admin
-  .from('pet_types')
-  .select('id, name')
-  .is('deleted_at', null)
-  .order('name');
-
-if (listError) fail(`List pet_types failed: ${listError.message}`);
-
-console.log(`\nActive pet_types (${all?.length ?? 0}):`);
-for (const row of all ?? []) {
-  console.log(`  - ${row.name} (${row.id})`);
-}
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

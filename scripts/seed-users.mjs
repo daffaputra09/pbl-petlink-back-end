@@ -363,15 +363,27 @@ async function ensureAuthUser(seed, usersByEmail) {
 }
 
 async function upsertProfile(userId, profile) {
-  const { error } = await admin.from('profiles').upsert(
-    {
-      id: userId,
-      name: profile.name,
-      role: profile.role,
-      is_active: true,
-    },
-    { onConflict: 'id' },
-  );
+  // Seed users get a password via auth.admin.createUser — mark setup complete so
+  // clinic portal does not show doctors as awaitingPasswordSetup.
+  const row = {
+    id: userId,
+    name: profile.name,
+    role: profile.role,
+    is_active: true,
+  };
+
+  const { data: existing, error: fetchError } = await admin
+    .from('profiles')
+    .select('password_set_at')
+    .eq('id', userId)
+    .maybeSingle();
+  if (fetchError) throw fetchError;
+
+  if (!existing?.password_set_at) {
+    row.password_set_at = new Date().toISOString();
+  }
+
+  const { error } = await admin.from('profiles').upsert(row, { onConflict: 'id' });
   if (error) throw error;
   console.log(`  profiles: upserted (${profile.role})`);
 }
@@ -390,6 +402,63 @@ async function upsertCustomerProfile(userId, customer) {
   console.log('  customer_profiles: upserted');
 }
 
+async function replaceClinicOpeningHours(clinicId, days) {
+  const { data: existingHours, error: fetchError } = await admin
+    .from('clinic_opening_hours')
+    .select('id')
+    .eq('clinic_id', clinicId);
+  if (fetchError) throw fetchError;
+
+  const hourIds = (existingHours ?? []).map((row) => row.id);
+  if (hourIds.length > 0) {
+    const { error: periodsError } = await admin
+      .from('clinic_opening_hour_periods')
+      .delete()
+      .in('clinic_opening_hours_id', hourIds);
+    if (periodsError) throw periodsError;
+  }
+
+  const { error: deleteHoursError } = await admin
+    .from('clinic_opening_hours')
+    .delete()
+    .eq('clinic_id', clinicId);
+  if (deleteHoursError) throw deleteHoursError;
+
+  for (const day of days) {
+    const isClosed = day.is_closed ?? false;
+    if (isClosed && day.periods?.length) {
+      throw new Error(`closed day ${day.day_of_week} cannot have opening periods`);
+    }
+    if (!isClosed && !day.periods?.length) {
+      throw new Error(`open day ${day.day_of_week} must have at least one opening period`);
+    }
+
+    const { data: hourRow, error: hourError } = await admin
+      .from('clinic_opening_hours')
+      .insert({
+        clinic_id: clinicId,
+        day_of_week: day.day_of_week,
+        is_closed: isClosed,
+      })
+      .select('id')
+      .single();
+    if (hourError) throw hourError;
+
+    if (!isClosed) {
+      const periods = day.periods.map((period, sortOrder) => ({
+        clinic_opening_hours_id: hourRow.id,
+        opens_at: period.opens_at,
+        closes_at: period.closes_at,
+        sort_order: sortOrder,
+      }));
+      const { error: periodError } = await admin
+        .from('clinic_opening_hour_periods')
+        .insert(periods);
+      if (periodError) throw periodError;
+    }
+  }
+}
+
 async function upsertClinicProfile(userId, clinic) {
   const { error } = await admin.from('clinic_profiles').upsert(
     {
@@ -406,11 +475,7 @@ async function upsertClinicProfile(userId, clinic) {
   console.log('  clinic_profiles: upserted');
 
   if (clinic.operating_hours?.length) {
-    const { error: hoursError } = await admin.rpc('replace_clinic_opening_hours', {
-      p_clinic_id: userId,
-      p_days: clinic.operating_hours,
-    });
-    if (hoursError) throw hoursError;
+    await replaceClinicOpeningHours(userId, clinic.operating_hours);
     console.log(
       `  clinic_opening_hours: replaced (${clinic.operating_hours.length} day(s))`,
     );
