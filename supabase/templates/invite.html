@@ -22,7 +22,7 @@
     </p>
     <p style="text-align: center; margin: 32px 0;">
       <a
-        href="{{ .ConfirmationURL }}"
+        href="{{ .SiteURL }}/auth/accept-invite?token_hash={{ .TokenHash }}&amp;type=invite&amp;next=/auth/set-password"
         style="background: #1E6B4F; color: white; text-decoration: none; padding: 14px 28px; border-radius: 10px; font-weight: 600; display: inline-block;"
       >
         Atur Kata Sandi
@@ -30,7 +30,7 @@
     </p>
     <p style="font-size: 13px; color: #6b7280;">
       Jika tombol tidak berfungsi, salin tautan berikut ke peramban Anda:<br />
-      <a href="{{ .ConfirmationURL }}" style="color: #1E6B4F; word-break: break-all;">{{ .ConfirmationURL }}</a>
+      <span style="color: #1E6B4F; word-break: break-all;">{{ .SiteURL }}/auth/accept-invite?token_hash={{ .TokenHash }}&amp;type=invite&amp;next=/auth/set-password</span>
     </p>
     <p style="font-size: 13px; color: #9ca3af; margin-top: 32px;">
       Jika Anda tidak mengharapkan email ini, abaikan saja.

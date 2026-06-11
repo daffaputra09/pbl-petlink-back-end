@@ -164,9 +164,13 @@ additional_redirect_urls = [
   "http://localhost:3000/auth/callback",
   "http://localhost:3000/auth/set-password",
   "http://localhost:3000/auth/reset-password",
+  "http://127.0.0.1:3000/auth/accept-invite",
+  "http://localhost:3000/auth/accept-invite",
   "https://petlink-app.vercel.app/auth/callback",
   "https://petlink-app.vercel.app/auth/set-password",
   "https://petlink-app.vercel.app/auth/reset-password",
+  "https://petlink-app.vercel.app/auth/accept-invite",
+  "https://petlink-app.vercel.app/auth/confirm",
 ]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
