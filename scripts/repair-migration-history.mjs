@@ -3,8 +3,8 @@
  * Sinkronkan supabase_migrations.schema_migrations dengan file lokal.
  *
  * Masalah: migrasi yang di-apply lewat Supabase MCP/Dashboard memakai timestamp
- * otomatis (mis. 20260611143136) yang tidak ada di supabase/migrations/.
- * File lokal memakai timestamp berbeda (mis. 20260618120000) dengan SQL sama.
+ * otomatis (mis. 20260611185052) yang tidak ada di supabase/migrations/.
+ * File lokal memakai timestamp berbeda (mis. 20260627120000) dengan SQL sama.
  *
  * Perbaikan: tandai entri orphan di remote sebagai reverted, lalu tandai file
  * lokal sebagai applied (SQL sudah ada di database).
@@ -25,8 +25,8 @@ const steps = [
       "repair",
       "--status",
       "reverted",
-      "20260611143136",
-      "20260611144616",
+      "20260611185052",
+      "20260611190801",
     ],
   },
   {
@@ -36,8 +36,8 @@ const steps = [
       "repair",
       "--status",
       "applied",
-      "20260618120000",
-      "20260619120000",
+      "20260627120000",
+      "20260628120000",
     ],
   },
 ];
