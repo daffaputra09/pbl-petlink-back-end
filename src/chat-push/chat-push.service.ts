@@ -123,7 +123,15 @@ export class ChatPushService {
         sender_id: record.sender_id,
         message_id: record.id,
       },
-      android: { priority: 'high', notification: { sound: 'default' } },
+      android: {
+        priority: 'high',
+        notification: {
+          sound: 'default',
+          icon: 'ic_notification',
+          color: '#047857',
+          image: 'https://petlink-app.vercel.app/logo.png',
+        },
+      },
       apns: {
         headers: { 'apns-priority': '10' },
         payload: { aps: { sound: 'default', badge: 1 } },
