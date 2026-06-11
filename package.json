@@ -21,6 +21,7 @@
     "db:push": "supabase db push",
     "db:repair:history": "node scripts/repair-migration-history.mjs",
     "auth:config:push": "node --env-file=.env scripts/push-auth-config.mjs",
+    "auth:templates:push": "node --env-file=.env scripts/push-email-templates.mjs",
     "db:diff": "supabase db diff",
     "db:start": "supabase start",
     "db:stop": "supabase stop",

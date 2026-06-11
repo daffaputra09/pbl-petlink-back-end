@@ -1,0 +1,23 @@
+---
+description: Supabase schema changes — always use CLI db push, never MCP apply_migration
+globs: supabase/migrations/**/*
+alwaysApply: false
+---
+
+# Supabase migrations (PetLink backend)
+
+## Apply schema changes
+
+1. Add SQL file under `supabase/migrations/` with timestamp prefix.
+2. Run **`npm run db:push`** from `pbl-petlink-back-end`.
+3. If history diverges, use **`npm run db:repair:history`** (see `scripts/repair-migration-history.mjs`).
+
+## Do NOT
+
+- **Do not** use Supabase MCP `apply_migration` for this project — it creates orphan version timestamps that break `db push` / `db pull`.
+- **Do not** edit migration history on remote manually except via `supabase migration repair`.
+
+## Auth / email config
+
+- `npm run auth:config:push` — SMTP, site URL, otp_expiry from `config.toml`
+- `npm run auth:templates:push` — invite/recovery HTML templates (needs `SUPABASE_ACCESS_TOKEN`)
